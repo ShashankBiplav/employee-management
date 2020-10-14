@@ -8,6 +8,10 @@
     "start": "node app.js",
     "start-dev": "nodemon app.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ShashankBiplav/employee-management.git"
+  },
   "keywords": [
     "nodeJS",
     "REST API",
@@ -16,9 +20,13 @@
   "author": "Shashank Biplav",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "mongoose": "^5.10.9"
+    "express-validator": "^6.6.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.9",
+    "multer": "^1.4.2"
   },
   "devDependencies": {
     "dotenv": "^8.2.0",
