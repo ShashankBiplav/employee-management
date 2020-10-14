@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const managerSchema = new Schema({
+const employeeSchema = new Schema({
     name: {
         type: String,
         required: true
@@ -27,13 +27,15 @@ const managerSchema = new Schema({
     salary: {
         type: Number
     },
-    department: {
-        type: String
-    },
-    employees: [{
+    departments: [{
         type: Schema.Types.ObjectID,
-        ref: 'Employee'
-    }],
+        ref: 'Department'
+    }]
+    ,
+    manager: {
+        type: Schema.Types.ObjectID,
+        ref: 'Manager'
+    },
     status: {
         type: String
     },
@@ -47,5 +49,5 @@ const managerSchema = new Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model('Manager', managerSchema);
+module.exports = mongoose.model('Employee', employeeSchema);
 
