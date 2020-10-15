@@ -67,6 +67,71 @@ exports.getAllDepartments = async (req, res, next) => {
     }
 };
 
+exports.getEmployee = async (req, res, next) =>{
+    const employeeId = req.params.employeeId;
+    try{
+        const employee = await Employee.findById(employeeId).populate('manager', 'name email department');
+        if (!employee){
+            const error = new Error('Employee not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        res.status(200).json({
+            message: 'Employee fetched successfully',
+            employee: employee
+        });
+    }catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+};
+
+exports.getManager = async (req, res, next) => {
+    const managerId = req.params.managerId;
+    try{
+        const manager = await Manager.findById(managerId).populate('employees', 'name email departments');
+        if (!manager){
+            const error = new Error('Manager not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        res.status(200).json({
+            message: 'Manager fetched successfully',
+            manager: manager
+        });
+    }
+    catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+};
+
+exports.getDepartment = async (req, res, next) => {
+    const departmentId = req.params.departmentId;
+    try{
+        const department = await Department.findById(departmentId).populate('employees manager', 'name');
+        if (!department){
+            const error = new Error('Department not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        res.status(200).json({
+            message: 'Department fetched successfully',
+            department: department
+        });
+    }
+    catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+};
+
 exports.createDepartment = async (req, res, next) => {
     const errors = expressValidator.validationResult(req);
     if (!errors.isEmpty()) {
@@ -198,7 +263,7 @@ exports.updateEmployee = async (req, res, next) => {
 exports.updateManager = async (req, res, next) => {
     const managerId = req.params.managerId;
     ;
-    const {name, email, age, gender, currentPosition, salary, department, status} = req.body;
+    const {name, email, age, gender, currentPosition, salary, departmentId, status} = req.body;
     let profileImageUrl = req.body.image;
     if (req.file) {
         profileImageUrl = req.file.path; //filepath provided my multer
@@ -210,14 +275,14 @@ exports.updateManager = async (req, res, next) => {
     }
     try {
         const manager = await Manager.findById(managerId);
-        if (!manager) {
+        const department = await Department.findById(departmentId);
+        if (!manager || !department) {
             const error = new Error('Manager not found');
             error.statusCode = 404;
             throw error;
         }
         if (profileImageUrl !== manager.profileImageUrl) { //new image was uploaded
             clearImage(manager.profileImageUrl);
-            ;
         }
         manager.name = name;
         manager.email = email;
@@ -225,8 +290,10 @@ exports.updateManager = async (req, res, next) => {
         manager.gender = gender;
         manager.currentPosition = currentPosition;
         manager.salary = salary;
-        manager.department = department;
+        manager.department = departmentId;
         manager.status = status;
+        department.manager = manager._id;
+        await department.save();
         const result = await manager.save();
         res.status(201).json({
             message: 'Manager edited successfully',

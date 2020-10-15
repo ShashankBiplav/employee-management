@@ -14,6 +14,12 @@ router.get('/managers', isAdmin, adminController.getAllManagers);
 
 router.get('/departments', isAdmin, adminController.getAllDepartments);
 
+router.get('/employee/:employeeId', isAdmin, adminController.getEmployee);
+
+router.get('/manager/:managerId', isAdmin, adminController.getManager);
+
+router.get('/department/:departmentId', isAdmin, adminController.getDepartment);
+
 router.post('/create-department',
     isAdmin,
     [expressValidator.check('name').trim().not().isEmpty()],
