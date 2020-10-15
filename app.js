@@ -17,6 +17,8 @@ const app = express();
 
 const authRoutes = require('./routes/auth');
 
+const adminRoutes = require('./routes/admin');
+
 //filestorage setup
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -54,6 +56,9 @@ app.use((req, res, next) => {
 });
 //auth route entry point
 app.use('/auth', authRoutes);
+
+//admin route entry point
+app.use('/admin', adminRoutes);
 
 //central error handling middleware
 app.use((error, req, res, next) => {
