@@ -17,7 +17,7 @@ const app = express();
 
 const authRoutes = require('./routes/auth');
 
-const adminRoutes = require('./routes/admin');
+const adminRoutes = require('./routes/administrator');
 
 //filestorage setup
 const fileStorage = multer.diskStorage({
