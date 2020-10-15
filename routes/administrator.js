@@ -33,4 +33,43 @@ router.post('create-manager',
         expressValidator.check('age').trim().isNumeric().not().isEmpty()],
     adminController.createManager);
 
+router.put('/update-employee/:employeeId',
+    isAdmin,
+    [expressValidator.check('name').trim().not().isEmpty(),
+        expressValidator.check('email').isEmail().withMessage('Invalid Email').normalizeEmail(),
+        expressValidator.check('age').trim().isNumeric().not().isEmpty(),
+        expressValidator.check('gender').trim().not().isEmpty(),
+        expressValidator.check('currentPosition').trim().not().isEmpty(),
+        expressValidator.check('salary').trim().isNumeric().not().isEmpty(),
+        expressValidator.check('manager').trim().not().isEmpty(),
+        expressValidator.check('status').trim().not().isEmpty()],
+    adminController.updateEmployee);
+
+router.put('/update-manager/:managerId',
+    isAdmin,
+    [expressValidator.check('name').trim().not().isEmpty(),
+        expressValidator.check('email').isEmail().withMessage('Invalid Email').normalizeEmail(),
+        expressValidator.check('age').trim().isNumeric().not().isEmpty(),
+        expressValidator.check('gender').trim().not().isEmpty(),
+        expressValidator.check('currentPosition').trim().not().isEmpty(),
+        expressValidator.check('salary').trim().isNumeric().not().isEmpty(),
+        expressValidator.check('department').trim().not().isEmpty(),
+        expressValidator.check('status').trim().not().isEmpty()],
+    adminController.updateManager);
+
+router.put('/assign-manager/:employeeId',
+    isAdmin,
+    [expressValidator.check('managerId').trim().not().isEmpty()],
+    adminController.assignNewManagerToEmployee);
+
+router.put('/assign-employee-new-department/:employeeId',
+    isAdmin,
+    [expressValidator.check('departmentId').trim().not().isEmpty()],
+    adminController.assignEmployeeToAnewDepartment);
+
+router.put('/remove-employee-from-department/:employeeId',
+    isAdmin,
+    [expressValidator.check('departmentId').trim().not().isEmpty()],
+    adminController.removeEmployeeFromADepartment);
+
 module.exports = router;

@@ -10,10 +10,10 @@ const Manager = require('../models/manager');
 
 const Employee = require('../models/employee');
 
-exports.getAllEmployees = async(req, res, next) => {
+exports.getAllEmployees = async (req, res, next) => {
     const currentPage = req.query.page || 1;
     const perPage = 10;
-    try{
+    try {
         const totalEmployees = await Employee.find().countDocuments();
         const employees = await Employee.find().skip((currentPage - 1) * perPage).limit(perPage);
         res.status(200).json({
@@ -23,8 +23,7 @@ exports.getAllEmployees = async(req, res, next) => {
                 employees: employees
             }
         });
-    }
-    catch (err) {
+    } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -32,10 +31,10 @@ exports.getAllEmployees = async(req, res, next) => {
     }
 };
 
-exports.getAllManagers = async(req, res, next) => {
+exports.getAllManagers = async (req, res, next) => {
     const currentPage = req.query.page || 1;
     const perPage = 10;
-    try{
+    try {
         const totalManagers = await Manager.find().countDocuments();
         const managers = await Employee.find().skip((currentPage - 1) * perPage).limit(perPage);
         res.status(200).json({
@@ -45,8 +44,7 @@ exports.getAllManagers = async(req, res, next) => {
                 managers: managers
             }
         });
-    }
-    catch (err) {
+    } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -55,14 +53,13 @@ exports.getAllManagers = async(req, res, next) => {
 };
 
 exports.getAllDepartments = async (req, res, next) => {
-    try{
+    try {
         const departments = await Department.find().populate('employees manager');
         res.status(200).json({
             message: 'Departments fetched successfully',
             departments: departments
         });
-    }
-    catch (err) {
+    } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -70,7 +67,7 @@ exports.getAllDepartments = async (req, res, next) => {
     }
 };
 
-exports.createDepartment = async(req, res, next) => {
+exports.createDepartment = async (req, res, next) => {
     const errors = expressValidator.validationResult(req);
     if (!errors.isEmpty()) {
         const error = new Error('Validation failed.');
@@ -82,14 +79,13 @@ exports.createDepartment = async(req, res, next) => {
     const department = new Department({
         name: name
     });
-    try{
+    try {
         const result = await department.save();
         res.status(201).json({
             message: 'Department created successfully',
             result: result
         });
-    }
-    catch (err) {
+    } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -97,7 +93,7 @@ exports.createDepartment = async(req, res, next) => {
     }
 };
 
-exports.createEmployee = async(req, res, next) => {
+exports.createEmployee = async (req, res, next) => {
     const errors = expressValidator.validationResult(req);
     if (!errors.isEmpty()) {
         const error = new Error('Validation failed.');
@@ -109,16 +105,16 @@ exports.createEmployee = async(req, res, next) => {
     const employee = new Employee({
         name: name,
         email: email,
-        age: age
+        age: age,
+        dateOfJoining: Date.now(),
     });
-    try{
+    try {
         const result = await employee.save();
         res.status(201).json({
             message: 'Employee added to database successfully',
             result: result
         });
-    }
-    catch (err) {
+    } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -138,19 +134,194 @@ exports.createManager = async (req, res, next) => {
     const manager = new Manager({
         name: name,
         email: email,
-        age: age
+        age: age,
+        dateOfJoining: Date.now(),
     });
-    try{
+    try {
         const result = await manager.save();
         res.status(201).json({
             message: 'Manager added to database successfully',
             result: result
         });
-    }
-    catch (err) {
+    } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
         }
         next(err);
     }
 };
+
+exports.updateEmployee = async (req, res, next) => {
+    const employeeId = req.params.employeeId;
+    const {name, email, age, gender, currentPosition, salary, manager, status} = req.body;
+    let profileImageUrl = req.body.image;
+    if (req.file) {
+        profileImageUrl = req.file.path; //filepath provided my multer
+    }
+    if (!profileImageUrl) {
+        const error = new Error('No file picked.');
+        error.statusCode = 422;
+        throw error;
+    }
+    try {
+        const employee = await Employee.findById(employeeId);
+        if (!employee) {
+            const error = new Error('Employee not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        if (profileImageUrl !== employee.profileImageUrl) { //new image was uploaded
+            clearImage(employee.profileImageUrl);
+        }
+        employee.name = name;
+        employee.email = email;
+        employee.age = age;
+        employee.gender = gender;
+        employee.currentPosition = currentPosition;
+        employee.salary = salary;
+        employee.manager = manager;
+        employee.status = status;
+        employee.profileImageUrl = profileImageUrl;
+        const result = await employee.save();
+        res.status(201).json({
+            message: 'Employee edited successfully',
+            result: result
+        });
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+};
+
+exports.updateManager = async (req, res, next) => {
+    const managerId = req.params.managerId;
+    ;
+    const {name, email, age, gender, currentPosition, salary, department, status} = req.body;
+    let profileImageUrl = req.body.image;
+    if (req.file) {
+        profileImageUrl = req.file.path; //filepath provided my multer
+    }
+    if (!profileImageUrl) {
+        const error = new Error('No file picked.');
+        error.statusCode = 422;
+        throw error;
+    }
+    try {
+        const manager = await Manager.findById(managerId);
+        if (!manager) {
+            const error = new Error('Manager not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        if (profileImageUrl !== manager.profileImageUrl) { //new image was uploaded
+            clearImage(manager.profileImageUrl);
+            ;
+        }
+        manager.name = name;
+        manager.email = email;
+        manager.age = age;
+        manager.gender = gender;
+        manager.currentPosition = currentPosition;
+        manager.salary = salary;
+        manager.department = department;
+        manager.status = status;
+        const result = await manager.save();
+        res.status(201).json({
+            message: 'Manager edited successfully',
+            result: result
+        });
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+};
+
+exports.assignNewManagerToEmployee = async (req, res, next) => {
+    const employeeId = req.params.employeeId;
+    const managerId = req.body.managerId;
+    try {
+        const employee = await Employee.findById(employeeId);
+        const manager = await Manager.findById(managerId);
+        if (!employee || !manager) {
+            const error = new Error('Manager or Employee not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        employee.manager = managerId;
+        const result = await employee.save();
+        res.status(201).json({
+            message: `New manager ${manager.name} assigned to ${employee.name} successfully`,
+            result: result
+        });
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+};
+
+exports.assignEmployeeToAnewDepartment = async (req, res, next) => {
+    const employeeId = req.params.employeeId;
+    const departmentId = req.body.departmentId;
+    try {
+        const employee = await Employee.findById(employeeId);
+        const department = await Manager.findById(departmentId);
+        if (!employee || !department) {
+            const error = new Error('Department or Employee not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        employee.departments.push(department);
+        department.employees.push(employee);
+        await department.save();
+        const result = await employee.save();
+        res.status(201).json({
+            message: `New department ${department.name} assigned to ${employee.name} successfully`,
+            result: result
+        });
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+};
+
+exports.removeEmployeeFromADepartment = async (req, res, next) => {
+    const employeeId = req.params.employeeId;
+    const departmentId = req.body.departmentId;
+    try {
+        const employee = await Employee.findById(employeeId);
+        const department = await Manager.findById(departmentId);
+        if (!employee || !department) {
+            const error = new Error('Department or Employee not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        employee.departments.pull(department);
+        department.employees.pull(employee);
+        await department.save();
+        const result = await employee.save();
+        res.status(201).json({
+            message: `Employee ${employee.name} removed from ${department.name} department  `,
+            result: result
+        });
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+};
+
+//helper function to delete image
+const clearImage = filePath => {
+    filePath = path.join(__dirname, '..', filePath);
+    fs.unlink(filePath, err => console.log(err));
+};
+
