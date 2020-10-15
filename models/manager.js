@@ -28,7 +28,8 @@ const managerSchema = new Schema({
         type: Number
     },
     department: {
-        type: String
+        type: Schema.Types.ObjectID,
+        ref: 'Department'
     },
     employees: [{
         type: Schema.Types.ObjectID,

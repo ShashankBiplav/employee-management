@@ -67,11 +67,11 @@ exports.getAllDepartments = async (req, res, next) => {
     }
 };
 
-exports.getEmployee = async (req, res, next) =>{
+exports.getEmployee = async (req, res, next) => {
     const employeeId = req.params.employeeId;
-    try{
+    try {
         const employee = await Employee.findById(employeeId).populate('manager', 'name email department');
-        if (!employee){
+        if (!employee) {
             const error = new Error('Employee not found');
             error.statusCode = 404;
             throw error;
@@ -80,7 +80,7 @@ exports.getEmployee = async (req, res, next) =>{
             message: 'Employee fetched successfully',
             employee: employee
         });
-    }catch (err) {
+    } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -90,9 +90,9 @@ exports.getEmployee = async (req, res, next) =>{
 
 exports.getManager = async (req, res, next) => {
     const managerId = req.params.managerId;
-    try{
+    try {
         const manager = await Manager.findById(managerId).populate('employees', 'name email departments');
-        if (!manager){
+        if (!manager) {
             const error = new Error('Manager not found');
             error.statusCode = 404;
             throw error;
@@ -101,8 +101,7 @@ exports.getManager = async (req, res, next) => {
             message: 'Manager fetched successfully',
             manager: manager
         });
-    }
-    catch (err) {
+    } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -112,9 +111,9 @@ exports.getManager = async (req, res, next) => {
 
 exports.getDepartment = async (req, res, next) => {
     const departmentId = req.params.departmentId;
-    try{
+    try {
         const department = await Department.findById(departmentId).populate('employees manager', 'name');
-        if (!department){
+        if (!department) {
             const error = new Error('Department not found');
             error.statusCode = 404;
             throw error;
@@ -123,8 +122,7 @@ exports.getDepartment = async (req, res, next) => {
             message: 'Department fetched successfully',
             department: department
         });
-    }
-    catch (err) {
+    } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -377,6 +375,95 @@ exports.removeEmployeeFromADepartment = async (req, res, next) => {
         res.status(201).json({
             message: `Employee ${employee.name} removed from ${department.name} department  `,
             result: result
+        });
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+};
+
+exports.deleteEmployee = async (req, res, next) => {
+    const employeeId = req.params.employeeId;
+    try {
+        const employee = await Employee.findById(employeeId);
+        if (!employee) {
+            const error = new Error('Employee not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        const manager = await Manager.findById(employee.manager.toString());
+        manager.employees.pull(employee);
+        clearImage(employee.profileImageUrl);
+        for (const id of employee.departments) {
+            const department = await Department.findById(id);
+            department.employees.pull(employee);
+            await department.save();
+        }
+        await Employee.findByIdAndRemove(employeeId);
+        await manager.save();
+        res.status(201).json({
+            message: `Employee ${employee.name} deleted successfully `
+        });
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+};
+
+exports.deleteManager = async (req, res, next) => {
+    const managerId = req.params.managerId;
+    try {
+        const manager = await Manager.findById(managerId);
+        if (!manager) {
+            const error = new Error('Manager not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        const department = await Department.findById(manager.department.toString());
+        department.manager.pull(manager);
+        clearImage(manager.profileImageUrl);
+        for (const id of manager.employees) {
+            const employee = await Employee.findById(id);
+            employee.manager.pull(manager);
+            await employee.save();
+        }
+        await Manager.findByIdAndRemove(managerId);
+        await department.save();
+        res.status(201).json({
+            message: `Manager ${manager.name} deleted successfully `
+        });
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+};
+
+exports.deleteDepartment = async (req, res, next) => {
+    const departmentId = req.params.departmentId;
+    try {
+        const department = await Department.findById(departmentId);
+        if (!department) {
+            const error = new Error('Department not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        const manager = await Manager.findById(department.manager.toString());
+        manager.department.pull(department);
+        for (const id of department.employees) {
+            const employee = await Employee.findById(id);
+            employee.departments.pull(department);
+            await employee.save();
+        }
+        await Department.findByIdAndRemove(departmentId);
+        await manager.save();
+        res.status(201).json({
+            message: `Department ${department.name} deleted successfully `
         });
     } catch (err) {
         if (!err.statusCode) {

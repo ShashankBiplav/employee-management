@@ -78,4 +78,10 @@ router.put('/remove-employee-from-department/:employeeId',
     [expressValidator.check('departmentId').trim().not().isEmpty()],
     adminController.removeEmployeeFromADepartment);
 
+router.delete('/delete-employee/:employeeId', isAdmin, adminController.deleteEmployee);
+
+router.delete('/delete-manager/:managerId', isAdmin, adminController.deleteManager);
+
+router.delete('/delete-department/:departmentId', isAdmin, adminController.deleteDepartment);
+
 module.exports = router;
