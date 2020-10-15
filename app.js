@@ -15,6 +15,8 @@ const port = process.env.PORT|| 3001;
 
 const app = express();
 
+const authRoutes = require('./routes/auth');
+
 //filestorage setup
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -50,6 +52,8 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
 });
+//auth route entry point
+app.use('/auth', authRoutes);
 
 //central error handling middleware
 app.use((error, req, res, next) => {
