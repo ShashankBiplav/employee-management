@@ -7,7 +7,7 @@ const authController = require('../controllers/auth');
 const router = express.Router();
 
 //ADMINISTRATOR SIGNUP
-router.post('/administrator/signup',[expressValidator.check('name').trim().not().isEmpty(),
+router.post('/administrator/signup', [expressValidator.check('name').trim().not().isEmpty(),
     expressValidator.check('email').isEmail().withMessage('Invalid Email').normalizeEmail(),
     expressValidator.check('password').trim().isLength({
         min: 10
@@ -19,9 +19,11 @@ router.post('/administrator/login', [expressValidator.check('email').isEmail().n
     authController.administratorLogin);
 
 //get OTP to reset password
-router.post('/administrator/get-otp', authController.getOTPforAdmin);
+router.post('/administrator/get-otp', [expressValidator.check('email').isEmail().normalizeEmail()],
+    authController.getOTPforAdmin);
 
 //Reset password
-router.post('/administrator/reset-password', authController.resetAdminPassword);
+router.post('/administrator/reset-password',[expressValidator.check('email').isEmail().normalizeEmail()],
+    authController.resetAdminPassword);
 
 module.exports = router;

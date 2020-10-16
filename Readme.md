@@ -1,7 +1,15 @@
 # Employee Management REST API
 
 ## Installation
-First clone this repository on your machine and run `npm install` from your terminal or powershell in the project directory.
+First clone this repository on your machine and run `npm install` from your 
+
+> terminal
+
+ or 
+
+> powershell
+
+ in the project directory.
 
 ## Configuration
 In the project you need to create a `.env` file on the root level. The environment variables that are required and their format can be found in a `.env-sample` file in the project.

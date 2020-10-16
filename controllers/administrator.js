@@ -215,6 +215,13 @@ exports.createManager = async (req, res, next) => {
 };
 
 exports.updateEmployee = async (req, res, next) => {
+    const errors = expressValidator.validationResult(req);
+    if (!errors.isEmpty()) {
+        const error = new Error('Validation failed.');
+        error.statusCode = 422;
+        error.data = errors.array();
+        return next(error);
+    }
     const employeeId = req.params.employeeId;
     const {name, email, age, gender, currentPosition, salary, manager, status} = req.body;
     let profileImageUrl = req.body.image;
@@ -259,6 +266,13 @@ exports.updateEmployee = async (req, res, next) => {
 };
 
 exports.updateManager = async (req, res, next) => {
+    const errors = expressValidator.validationResult(req);
+    if (!errors.isEmpty()) {
+        const error = new Error('Validation failed.');
+        error.statusCode = 422;
+        error.data = errors.array();
+        return next(error);
+    }
     const managerId = req.params.managerId;
     ;
     const {name, email, age, gender, currentPosition, salary, departmentId, status} = req.body;
@@ -306,6 +320,13 @@ exports.updateManager = async (req, res, next) => {
 };
 
 exports.assignNewManagerToEmployee = async (req, res, next) => {
+    const errors = expressValidator.validationResult(req);
+    if (!errors.isEmpty()) {
+        const error = new Error('Validation failed.');
+        error.statusCode = 422;
+        error.data = errors.array();
+        return next(error);
+    }
     const employeeId = req.params.employeeId;
     const managerId = req.body.managerId;
     try {
@@ -331,6 +352,13 @@ exports.assignNewManagerToEmployee = async (req, res, next) => {
 };
 
 exports.assignEmployeeToAnewDepartment = async (req, res, next) => {
+    const errors = expressValidator.validationResult(req);
+    if (!errors.isEmpty()) {
+        const error = new Error('Validation failed.');
+        error.statusCode = 422;
+        error.data = errors.array();
+        return next(error);
+    }
     const employeeId = req.params.employeeId;
     const departmentId = req.body.departmentId;
     try {
@@ -358,6 +386,13 @@ exports.assignEmployeeToAnewDepartment = async (req, res, next) => {
 };
 
 exports.removeEmployeeFromADepartment = async (req, res, next) => {
+    const errors = expressValidator.validationResult(req);
+    if (!errors.isEmpty()) {
+        const error = new Error('Validation failed.');
+        error.statusCode = 422;
+        error.data = errors.array();
+        return next(error);
+    }
     const employeeId = req.params.employeeId;
     const departmentId = req.body.departmentId;
     try {
