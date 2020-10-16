@@ -88,5 +88,56 @@
     }
 
 ## Administrator Endpoints
+Here Auth token is a bearer token that has to be set in the authorization header. You will get auth token from Admin Login endpoint.
+All the ADMIN endpoints required an Auth Bearer token. Be sure to send a valid token on every required admin accessible endpoint.
+
+Example: `"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJpcGxhdnNoYXNoYW5rN0BnbWFpbC5jb20iLCJ1c2VySWQiOiI1Zjg5NjQzYjBiY2Y3ZjA0NzA2YjlkMzciLCJpYXQiOjE2MDI4NDU5OTksImV4cCI6MTYwMjkzMjM5OX0.lf5BBFt8d7Tl3oIFa87LGUTDhS1D69ryA2kAj35F53E"`
 
 ### Create Department
+*Endpoint:*   `baseURL/admin/create-department`  
+*Request Type:* **POST**
+***Authorization Header is required!***
+*Expected data in JSON:* 
+
+    {
+    	"name": "Developers"
+    }
+*Returned Data:*
+
+    {
+    	"message": "Department created successfully",
+    	"result": {
+    		"employees": [],
+    		"_id": "5f897d3e2b28f606a8a2f215",
+    		"name": "Developers",
+    		"__v": 0
+    	}
+    }
+
+### Create Employee
+*Endpoint:*   `baseURL/admin/create-employee`  
+*Request Type:* **POST**
+***Authorization Header is required!***
+*Expected data in JSON:* 
+
+    {
+    	"name": "Developers"
+    	"email": "test@test.com",
+		"age": 25
+    }
+*Returned Data:*
+
+    {
+        "message": "Employee added to database successfully",
+    	"result": {
+    		"departments": [],
+    		"_id": "5f89801800822c06cb0c8703",
+    		"name": "test",
+    		"email": "test@test.com",
+    		"age": 25,
+    		"dateOfJoining": "2020-10-16T11:12:24.485Z",
+    		"createdAt": "2020-10-16T11:12:24.491Z",
+    		"updatedAt": "2020-10-16T11:12:24.491Z",
+    		"__v": 0
+    	}
+    }
