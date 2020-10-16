@@ -8,7 +8,7 @@ const isAdmin = require('../middleware/is-admin');
 
 const router = express.Router();
 
-router.get('/employees', isAdmin, adminController.getAllEmployees);
+router.get('/employees/:page', isAdmin, adminController.getAllEmployees);
 
 router.get('/managers', isAdmin, adminController.getAllManagers);
 

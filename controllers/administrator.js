@@ -11,7 +11,7 @@ const Manager = require('../models/manager');
 const Employee = require('../models/employee');
 
 exports.getAllEmployees = async (req, res, next) => {
-    const currentPage = req.query.page || 1;
+    const currentPage = req.params.page || 1;
     const perPage = 10;
     try {
         const totalEmployees = await Employee.find().countDocuments();
