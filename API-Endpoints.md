@@ -141,3 +141,62 @@ Example: `"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFp
     		"__v": 0
     	}
     }
+
+### Create Manager
+*Endpoint:*   `baseURL/admin/create-manager`  
+*Request Type:* **POST**
+***Authorization Header is required!***
+*Expected data in JSON:* 
+
+    {
+    	"name": "Test manager"
+    	"email": "manager@test.com",
+		"age": 28
+    }
+*Returned Data:*
+
+    {
+        "message": "Manager added to database successfully",
+    	"result": {
+    		"employees": [],
+		    "_id": "5f898388810eff07321db99f",
+		    "name": "Test manager",
+		    "email": "manager@test.com",
+		    "age": 28,
+		    "dateOfJoining": "2020-10-16T11:27:04.192Z",
+		    "createdAt": "2020-10-16T11:27:04.197Z",
+		    "updatedAt": "2020-10-16T11:27:04.197Z",
+		    "__v": 0
+    	}
+    }
+
+### Update Employee
+*Endpoint:*   `baseURL/admin/update-employee/:employeeId`  
+*Request Type:* **POST**
+***Authorization Header is required!***
+*Expected data will be in **form-data** because image cannot be passed in JSON:* 
+![Data to be expected](https://i.ibb.co/phcNxWH/Screenshot-2020-10-16-at-5-19-27-PM.png)
+*Returned Data:*
+
+    enter code here
+
+    {
+	    "message": "Employee edited successfully",
+	    "result": {
+		    "departments": [],
+		    "_id": "5f89801800822c06cb0c8703",
+		    "name": "Shashank",
+		    "email": "shashank@gmail.com",
+		    "age": 25,
+		    "dateOfJoining": "2020-10-16T11:12:24.485Z",
+		    "createdAt": "2020-10-16T11:12:24.491Z",
+		    "updatedAt": "2020-10-16T11:39:53.746Z",
+		    "__v": 0,
+		    "gender": "MALE",
+		    "currentPosition": "Developer",
+		    "salary": 125000,
+		    "manager": "5f898388810eff07321db99f",
+		    "status": "ACTIVE",
+		    "profileImageUrl": "images/2020-10-16T11:39:53.543Z-Shashank.jpg"
+	    }
+    }

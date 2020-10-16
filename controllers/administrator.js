@@ -228,6 +228,7 @@ exports.updateEmployee = async (req, res, next) => {
     if (req.file) {
         profileImageUrl = req.file.path; //filepath provided my multer
     }
+    console.log(req.file.path);
     if (!profileImageUrl) {
         const error = new Error('No file picked.');
         error.statusCode = 422;
@@ -240,9 +241,9 @@ exports.updateEmployee = async (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
-        if (profileImageUrl !== employee.profileImageUrl) { //new image was uploaded
-            clearImage(employee.profileImageUrl);
-        }
+        // if (profileImageUrl !== employee.profileImageUrl) { //new image was uploaded
+        //     clearImage(employee.profileImageUrl);
+        // }
         employee.name = name;
         employee.email = email;
         employee.age = age;

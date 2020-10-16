@@ -32,7 +32,7 @@ router.post('/create-employee',
         expressValidator.check('age').trim().isNumeric().not().isEmpty()],
     adminController.createEmployee);
 
-router.post('create-manager',
+router.post('/create-manager',
     isAdmin,
     [expressValidator.check('name').trim().not().isEmpty(),
         expressValidator.check('email').isEmail().withMessage('Invalid Email').normalizeEmail(),
