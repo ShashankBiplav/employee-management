@@ -275,11 +275,11 @@ exports.updateManager = async (req, res, next) => {
         return next(error);
     }
     const managerId = req.params.managerId;
-    ;
     const {name, email, age, gender, currentPosition, salary, departmentId, status} = req.body;
     let profileImageUrl = req.body.image;
     if (req.file) {
         profileImageUrl = req.file.path; //filepath provided my multer
+        console.log(profileImageUrl);
     }
     if (!profileImageUrl) {
         const error = new Error('No file picked.');
@@ -290,13 +290,13 @@ exports.updateManager = async (req, res, next) => {
         const manager = await Manager.findById(managerId);
         const department = await Department.findById(departmentId);
         if (!manager || !department) {
-            const error = new Error('Manager not found');
+            const error = new Error('Manager or department not found');
             error.statusCode = 404;
             throw error;
         }
-        if (profileImageUrl !== manager.profileImageUrl) { //new image was uploaded
-            clearImage(manager.profileImageUrl);
-        }
+        // if (profileImageUrl !== manager.profileImageUrl && manager.profileImageUrl !== null) { //new image was uploaded
+        //     clearImage(manager.profileImageUrl);
+        // }
         manager.name = name;
         manager.email = email;
         manager.age = age;
@@ -313,6 +313,7 @@ exports.updateManager = async (req, res, next) => {
             result: result
         });
     } catch (err) {
+        console.log(err);
         if (!err.statusCode) {
             err.statusCode = 500;
         }

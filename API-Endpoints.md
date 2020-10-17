@@ -175,10 +175,19 @@ Example: `"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFp
 *Request Type:* **POST**
 ***Authorization Header is required!***
 *Expected data will be in **form-data** because image cannot be passed in JSON:* 
-![Data to be expected](https://i.ibb.co/phcNxWH/Screenshot-2020-10-16-at-5-19-27-PM.png)
+
+    name:Shashank
+    email:shashank@gmail.com
+    age:25
+    gender:MALE
+    currentPosition:Developer
+    salary:125000
+    manager:5f898388810eff07321db99f
+    status:ACTIVE
+    image: Shashank.jpg (file)
+
 *Returned Data:*
 
-    enter code here
 
     {
 	    "message": "Employee edited successfully",
@@ -198,5 +207,43 @@ Example: `"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFp
 		    "manager": "5f898388810eff07321db99f",
 		    "status": "ACTIVE",
 		    "profileImageUrl": "images/2020-10-16T11:39:53.543Z-Shashank.jpg"
+	    }
+    }
+
+### Update Manager
+*Endpoint:*   `baseURL/admin/update-manager/:managerId`  
+*Request Type:* **PUT**
+***Authorization Header is required!***
+*Expected data will be in **form-data** because image cannot be passed in JSON:* 
+
+    name:Manager1
+    email:test@test.com
+    age:25
+    gender:MALE
+    currentPosition:SENIOR MANAGER
+    salary:130000
+    departmentId:5f897d3e2b28f606a8a2f215
+    status:ACTIVE
+    image: Shashank.jpg (file)
+
+*Returned Data:*
+
+    {
+	    "message": "Manager edited successfully",
+	    "result": {
+		    "employees": [],
+		    "_id": "5f898388810eff07321db99f",
+		    "name": "Manager1",
+		    "email": "test@test.com",
+		    "age": 25,
+		    "dateOfJoining": "2020-10-16T11:27:04.192Z",
+			"createdAt": "2020-10-16T11:27:04.197Z",
+			"updatedAt": "2020-10-17T12:03:39.478Z",
+			"__v": 0,
+			"gender": "MALE",
+			"currentPosition": "SENIOR MANAGER",
+			"salary": 130000,
+			"department": "5f897d3e2b28f606a8a2f215",
+			"status": "ACTIVE"
 	    }
     }

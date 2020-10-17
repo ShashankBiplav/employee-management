@@ -13,21 +13,21 @@ module.exports= async(req, res, next)=>{
     let decodedToken;
     try {
         decodedToken = jwt.verify(token, 'yoursuperdupersecretkeythatisknownonlytoyouandtheserver');
+        if (!decodedToken) {
+            const error = new Error('Not Authorized');
+            error.status = 401;
+            throw error;
+        }
+        const admin = await administrator.findById(decodedToken.userId);
+        if (!admin){
+            const error = new Error('Admin not found');
+            error.status = 404;
+            throw error;
+        }
+        req.userId = decodedToken.userId; //setting userId to request
+        next();
     } catch (error) {
         error.status = 500;
         throw error;
     }
-    if (!decodedToken) {
-        const error = new Error('Not Authorized');
-        error.status = 401;
-        throw error;
-    }
-    const admin = await administrator.findById(decodedToken.userId);
-    if (!admin){
-        const error = new Error('Admin not found');
-        error.status = 404;
-        throw error;
-    }
-    req.userId = decodedToken.userId; //setting userId to request
-    next();
 };

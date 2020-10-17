@@ -59,7 +59,7 @@ router.put('/update-manager/:managerId',
         expressValidator.check('gender').trim().not().isEmpty(),
         expressValidator.check('currentPosition').trim().not().isEmpty(),
         expressValidator.check('salary').trim().isNumeric().not().isEmpty(),
-        expressValidator.check('department').trim().not().isEmpty(),
+        expressValidator.check('department').trim(),
         expressValidator.check('status').trim().not().isEmpty()],
     adminController.updateManager);
 
