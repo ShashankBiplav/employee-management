@@ -252,7 +252,7 @@ Example: `"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFp
 *Endpoint:*   `baseURL/admin/assign-manager/:employeeId`  
 *Request Type:* **PUT**
 ***Authorization Header is required!***
-*Expected data will be in **form-data** because image cannot be passed in JSON:* 
+*Expected data in JSON:*  
 
     {
     	"managerId": "5f898388810eff07321db99f"
@@ -285,7 +285,7 @@ Example: `"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFp
 *Endpoint:*   `baseURL/admin/assign-employee-new-department/5f89801800822c06cb0c8703`  
 *Request Type:* **PUT**
 ***Authorization Header is required!***
-*Expected data will be in **form-data** because image cannot be passed in JSON:* 
+*Expected data in JSON:* 
 
     {
     	"departmentId": "5f8bd69cf262b5105c1c4aeb"
