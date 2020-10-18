@@ -282,7 +282,7 @@ Example: `"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFp
     }
 
 ### Assign New Department to Employee
-*Endpoint:*   `baseURL/admin/assign-employee-new-department/5f89801800822c06cb0c8703`  
+*Endpoint:*   `baseURL/admin/assign-employee-new-department/:employeeId`  
 *Request Type:* **PUT**
 ***Authorization Header is required!***
 *Expected data in JSON:* 
@@ -321,3 +321,79 @@ Example: `"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFp
     		"status": "ACTIVE"
     	}
     }
+
+### Remove Employee from Department
+*Endpoint:*   `baseURL/admin/remove-employee-from-department/:employeeId`  
+*Request Type:* **PUT**
+***Authorization Header is required!***
+*Expected data in JSON:* 
+
+    {
+    	"departmentId": "5f8bd69cf262b5105c1c4aeb"
+    }
+
+*Returned Data:*
+
+    {
+    	"message": "Employee Shashank removed from Testers department",
+    	"result": {
+    		"_id": "5f89801800822c06cb0c8703",
+			"name": "Shashank",
+			"email": "shashank@gmail.com",
+			"age": 25,
+			"dateOfJoining": "2020-10-16T11:12:24.485Z",
+			"createdAt": "2020-10-16T11:12:24.491Z",
+			"updatedAt": "2020-10-18T05:59:41.243Z",
+			"__v": 2,
+			"currentPosition": "Developer",
+			"gender": "MALE",
+			"manager": "5f898388810eff07321db99f",
+			"profileImageUrl": "images/2020-10-16T11:39:53.543Z-Shashank.jpg",
+			"salary": 125000,
+			"status": "ACTIVE"
+    	}
+    }
+
+### Delete Employee from Database
+*Endpoint:*   `baseURL/admin/delete-employee/:employeeId`  
+*Request Type:* **DELETE**
+***Authorization Header is required!***
+
+*Expected data in JSON:* 
+
+   **NONE**
+
+*Returned Data:*
+
+    {
+    "message": "Employee Shashank deleted successfully "
+    }
+
+### Delete Manager from Database
+*Endpoint:*   `baseURL/admin/delete-manager/:managerId`  
+*Request Type:* **DELETE**
+***Authorization Header is required!***
+*Expected data in JSON:* 
+
+   **NONE**
+
+*Returned Data:*
+
+    {
+    "message": "Manager Shashank deleted successfully "
+    }
+
+### Delete Department from Database
+*Endpoint:*   `baseURL/admin/delete-department/:departmentId`  
+*Request Type:* **DELETE**
+***Authorization Header is required!***
+*Expected data in JSON:* 
+
+   **NONE**
+
+*Returned Data:*
+
+    {
+    "message": "Department Developers deleted successfully "
+    }
+
