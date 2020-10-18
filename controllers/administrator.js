@@ -365,7 +365,7 @@ exports.assignEmployeeToAnewDepartment = async (req, res, next) => {
     const departmentId = req.body.departmentId;
     try {
         const employee = await Employee.findById(employeeId);
-        const department = await Manager.findById(departmentId);
+        const department = await Department.findById(departmentId);
         if (!employee || !department) {
             const error = new Error('Department or Employee not found');
             error.statusCode = 404;
