@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+const path = require('path');
+
 const Administrator = require('../models/administrator');
 
 const expressValidator = require('express-validator');
@@ -140,7 +142,8 @@ exports.createDepartment = async (req, res, next) => {
     }
     const name = req.body.name;
     const department = new Department({
-        name: name
+        name: name,
+        manager: null
     });
     try {
         const result = await department.save();
@@ -241,9 +244,9 @@ exports.updateEmployee = async (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
-        // if (profileImageUrl !== employee.profileImageUrl) { //new image was uploaded
-        //     clearImage(employee.profileImageUrl);
-        // }
+        if (profileImageUrl !== employee.profileImageUrl && employee.profileImageUrl === null) { //new image was uploaded
+            clearImage(employee.profileImageUrl);
+        }
         employee.name = name;
         employee.email = email;
         employee.age = age;
@@ -294,9 +297,9 @@ exports.updateManager = async (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
-        // if (profileImageUrl !== manager.profileImageUrl && manager.profileImageUrl !== null) { //new image was uploaded
-        //     clearImage(manager.profileImageUrl);
-        // }
+        if (profileImageUrl !== manager.profileImageUrl && manager.profileImageUrl === null) { //new image was uploaded
+            clearImage(manager.profileImageUrl);
+        }
         manager.name = name;
         manager.email = email;
         manager.age = age;
@@ -305,6 +308,7 @@ exports.updateManager = async (req, res, next) => {
         manager.salary = salary;
         manager.department = departmentId;
         manager.status = status;
+        manager.profileImageUrl = profileImageUrl;
         department.manager = manager._id;
         await department.save();
         const result = await manager.save();
@@ -432,7 +436,9 @@ exports.deleteEmployee = async (req, res, next) => {
         }
         const manager = await Manager.findById(employee.manager.toString());
         manager.employees.pull(employee);
-        clearImage(employee.profileImageUrl);
+        if (employee.profileImageUrl !== null) {
+            clearImage(employee.profileImageUrl);
+        }
         for (const id of employee.departments) {
             const department = await Department.findById(id);
             department.employees.pull(employee);
@@ -461,8 +467,10 @@ exports.deleteManager = async (req, res, next) => {
             throw error;
         }
         const department = await Department.findById(manager.department.toString());
-        department.manager.pull(manager);
-        clearImage(manager.profileImageUrl);
+        department.manager = null;
+        if(manager.profileImageUrl !== null) {
+            clearImage(manager.profileImageUrl);
+        }
         for (const id of manager.employees) {
             const employee = await Employee.findById(id);
             employee.manager.pull(manager);
@@ -490,15 +498,17 @@ exports.deleteDepartment = async (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
-        const manager = await Manager.findById(department.manager.toString());
-        manager.department.pull(department);
+        if(department.manager !== null) {
+            const manager = await Manager.findById(department.manager.toString());
+            manager.department = null;
+            await manager.save();
+        }
         for (const id of department.employees) {
             const employee = await Employee.findById(id);
             employee.departments.pull(department);
             await employee.save();
         }
         await Department.findByIdAndRemove(departmentId);
-        await manager.save();
         res.status(201).json({
             message: `Department ${department.name} deleted successfully `
         });
