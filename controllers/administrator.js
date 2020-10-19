@@ -434,9 +434,13 @@ exports.deleteEmployee = async (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
-        const manager = await Manager.findById(employee.manager.toString());
-        manager.employees.pull(employee);
-        if (employee.profileImageUrl !== null) {
+        if (employee.manager) {
+            const manager = await Manager.findById(employee.manager.toString());
+            manager.employees.pull(employee);
+            await manager.save();
+
+        }
+        if (employee.profileImageUrl) {
             clearImage(employee.profileImageUrl);
         }
         for (const id of employee.departments) {
@@ -445,7 +449,6 @@ exports.deleteEmployee = async (req, res, next) => {
             await department.save();
         }
         await Employee.findByIdAndRemove(employeeId);
-        await manager.save();
         res.status(201).json({
             message: `Employee ${employee.name} deleted successfully `
         });
@@ -466,9 +469,12 @@ exports.deleteManager = async (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
-        const department = await Department.findById(manager.department.toString());
-        department.manager = null;
-        if(manager.profileImageUrl !== null) {
+        if (manager.department) {
+            const department = await Department.findById(manager.department.toString());
+            department.manager = null;
+            await department.save();
+        }
+        if(manager.profileImageUrl) {
             clearImage(manager.profileImageUrl);
         }
         for (const id of manager.employees) {
@@ -477,7 +483,6 @@ exports.deleteManager = async (req, res, next) => {
             await employee.save();
         }
         await Manager.findByIdAndRemove(managerId);
-        await department.save();
         res.status(201).json({
             message: `Manager ${manager.name} deleted successfully `
         });
@@ -498,7 +503,7 @@ exports.deleteDepartment = async (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
-        if(department.manager !== null) {
+        if(department.manager) {
             const manager = await Manager.findById(department.manager.toString());
             manager.department = null;
             await manager.save();
